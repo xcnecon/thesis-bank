@@ -251,4 +251,4 @@ df['hhi_z'] = (df['hhi_z'] - df['hhi_z'].mean()) / df['hhi_z'].std()
 df['branch_density_z'] = (df['branch_density_z'] - df['branch_density_z'].mean()) / df['branch_density_z'].std()
 
 # Write the final panel.
-df.to_csv("data/processed/bank_2021_with_si&hhi.csv", index=False)
+df.to_csv("data/processed/instruments.csv", index=False)
