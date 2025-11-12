@@ -19,3 +19,4 @@ For EACH uploaded PDF, output a JSON block with:
 - how_it_relates_to_my_project: 2–4 bullets; refer to the research proposal in file folder
 - notable_quotes: [{"page": X, "quote": "verbatim ≤40 words"}]
 Rules: Use ONLY the uploaded PDFs. Every numeric claim gets a page citation. No outside sources. If info is missing, say “insufficient in paper.”
+
