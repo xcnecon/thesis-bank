@@ -6,7 +6,7 @@ bank_credit = pd.read_csv("data/processed/bank_credit.csv")
 instruments = pd.read_csv("data/processed/instruments.csv")
 
 df = deposit_interest_rate.merge(bank_credit, on=['rssd9001', 'rssd9999', 'rssd9050'], how='left')
-instruments = instruments[['RSSDID', 'sophistication_index_z', 'hhi_z', 'branch_density_z', 'NE', 'MA', 'EC', 'WC', 'SA', 'ES', 'WS', 'MT', 'PC']]
+instruments = instruments[['RSSDID', 'sophistication_index_z', 'ASSET','hhi_z', 'branch_density_z', 'NE', 'MA', 'EC', 'WC', 'SA', 'ES', 'WS', 'MT', 'PC']]
 instruments.rename(columns={'RSSDID': 'rssd9001'}, inplace=True)
 df = df.merge(instruments, on=['rssd9001'], how='left')
 
@@ -60,5 +60,11 @@ df = df.merge(ffr, on=['Date'], how='left')
 mask = (df['Date'] >= '2022-01-01') & (df['Date'] <= '2023-09-30')
 df = df[mask]
 print(len(df))
+
+df['large_bank'] = np.where(df['ASSET'] > 1000000, 1, 0)
+df.drop(columns=['ASSET'], inplace=True)
+
+print(len(df[df['large_bank'] == 1]))
+print(len(df[df['large_bank'] == 0]))
 
 df.to_csv("data/working/working_panel.csv", index=False)
