@@ -118,5 +118,23 @@ g_{i,t}^{IB}
 $$
 and an analogous specification for $g_{i,t}^{Tot}$, are estimated to assess whether the instruments also predict funding quantity adjustments. These deposit-quantity first stages are primarily used as diagnostics for the role of interest-bearing deposits in the deposit channel, while the main IV specifications in the subsequent analysis focus on level changes in the domestic deposit rate as the endogenous variable.
 
+## Second-stage regressions for lending
+The second-stage regression links changes in banks’ domestic lending to changes in their domestic deposit rates that are instrumented by the policy–exposure interactions described above. For each bank–quarter and each lending outcome $k$ (such as total domestic loans, domestic business loans, or domestic real estate loans), let $g_{i,t}^k$ denote the quarter-on-quarter percentage change in the corresponding domestic loan balance. The baseline second-stage specification relates $g_{i,t}^k$ to the instrumented change in the effective domestic deposit rate:
+$$
+g_{i,t}^k
+= \alpha_i^k + \lambda_t^k
++ \theta^k\,\widehat{\Delta r_{i,t}^{dep}}
++ X_{i,t-1}^{\prime} \delta^k
++ u_{i,t}^k,
+$$
+where $\alpha_i^k$ and $\lambda_t^k$ are bank and quarter fixed effects, respectively, $\widehat{\Delta r_{i,t}^{dep}}$ is the fitted value of the change in the effective domestic deposit rate from the first-stage regression, and $X_{i,t-1}$ is a vector of lagged bank characteristics (such as size, capitalization, liquidity, and funding structure) included as controls. Under the usual IV assumptions, the coefficient $\theta^k$ can be interpreted as a local semi-elasticity of domestic lending growth with respect to shifts in the domestic deposit rate that are driven by the interaction of pre-period exposure indices with subsequent federal funds rate changes, holding fixed unobserved bank heterogeneity and common time shocks. Standard errors are clustered at the bank level.
+
+In addition to estimating this specification in the full commercial-bank sample, the analysis considers heterogeneity by bank size by re-estimating the same second-stage equation separately for large and small banks, using the size-appropriate first-stage instruments described above. An analogous IV specification can be written with instrumented percentage changes in domestic deposit quantities in place of $\Delta r_{i,t}^{dep}$, but first-stage diagnostics show that the policy–exposure interactions are weak predictors of deposit quantity growth. Because the instruments fail conventional first-stage strength tests for deposit quantities, the paper does not develop a separate quantity-based second-stage equation; instead, deposit flows are analyzed as descriptive or reduced-form outcomes rather than as endogenous variables in an additional IV design.
+
+# Results
+
+## First-stage regressions
+
+
 
 # References

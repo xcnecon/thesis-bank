@@ -86,7 +86,7 @@ reghdfe d_interest_rate_on_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1, ///
+        if sample_stage1 , ///
         absorb(bankid) ///
         cluster(bankid)
 
@@ -102,7 +102,7 @@ reghdfe d_interest_rate_on_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 1 , ///
+        if sample_stage1  & large_bank == 1 , ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -113,7 +113,7 @@ reghdfe d_interest_rate_on_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 0, ///
+        if sample_stage1  & large_bank == 0, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -131,7 +131,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1, ///
+        if sample_stage1, ///
         absorb(bankid) ///
         cluster(bankid)
 
@@ -147,7 +147,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 1 , ///
+        if sample_stage1 & large_bank == 1 , ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -158,7 +158,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 0, ///
+        if sample_stage1 & large_bank == 0, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -168,7 +168,7 @@ reghdfe d_average_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1, ///
+        if sample_stage1, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -178,7 +178,7 @@ reghdfe d_average_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 0, ///
+        if sample_stage1 & large_bank == 0, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -189,7 +189,7 @@ reghdfe d_average_deposit ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 1, ///
+        if sample_stage1 & large_bank == 1, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -199,7 +199,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1, ///
+        if sample_stage1, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -209,7 +209,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 0, ///
+        if sample_stage1 & large_bank == 0, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr
@@ -220,7 +220,7 @@ reghdfe d_average_interest_bearing_depos ///
         i.qdate ///
         c.ne#i.qdate c.ma#i.qdate c.ec#i.qdate c.wc#i.qdate ///
         c.sa#i.qdate c.es#i.qdate c.ws#i.qdate c.mt#i.qdate ///
-        if sample_stage1 & is_commercial_bank == 1 & large_bank == 1, ///
+        if sample_stage1 & large_bank == 1, ///
         absorb(bankid) ///
         cluster(bankid)
 test zS_dffr zR_dffr zH_dffr

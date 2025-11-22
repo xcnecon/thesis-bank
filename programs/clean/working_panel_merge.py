@@ -18,6 +18,7 @@ DEPOSIT_INTEREST_RATE_CSV = f"{PROC_DIR}/deposit_interest_rate.csv"
 BANK_CREDIT_CSV = f"{PROC_DIR}/bank_credit.csv"
 INSTRUMENTS_CSV = f"{PROC_DIR}/instruments.csv"
 FFR_CSV = f"{PROC_DIR}/ffr_quarterly.csv"
+CONTROLS_CSV = f"{PROC_DIR}/controls.csv"
 OUTPUT_CSV = f"{WORK_DIR}/working_panel.csv"
 
 # Constants
@@ -34,6 +35,7 @@ def main() -> None:
     deposit_interest_rate = pd.read_csv(DEPOSIT_INTEREST_RATE_CSV)
     bank_credit = pd.read_csv(BANK_CREDIT_CSV)
     instruments = pd.read_csv(INSTRUMENTS_CSV)
+    controls = pd.read_csv(CONTROLS_CSV)
 
     # Merge core inputs
     df = deposit_interest_rate.merge(
@@ -45,7 +47,7 @@ def main() -> None:
     ]
     instruments.rename(columns={'RSSDID': 'rssd9001'}, inplace=True)
     df = df.merge(instruments, on=['rssd9001'], how='left')
-
+    df = df.merge(controls, on=['rssd9001', 'rssd9999'], how='left')
     # Harmonize identifiers
     df.rename(columns={'rssd9001': 'Bank ID', 'rssd9999': 'Date'}, inplace=True)
     df.drop(columns=['rssd9050', 'rssdfininstfilingtype'], inplace=True)
@@ -70,8 +72,18 @@ def main() -> None:
     # Require instrument availability
     mask = ~df['sophistication_index_z'].isna()
     df = df[mask]
-    print(len(df))
 
+    # Commercial bank flag based on BKCLASS
+    # See FFIEC Call Report documentation for BKCLASS codes.
+    df['is_commercial_bank'] = np.where(df['BKCLASS'].isin(COMMERCIAL_BKCLASS), 1, 0)
+    df.drop(columns=['BKCLASS'], inplace=True)
+
+    df = df[df['is_commercial_bank'] == 1]
+    df.drop(columns=['is_commercial_bank'], inplace=True)
+    
+    # Count before winsorizing
+    print('Bank-quarter before winsorizing: ', len(df))
+    
     # Drop outliers in rate series using 0.5% / 99.5% thresholds
     low_dep = df['interest_rate_on_deposit'].quantile(OUTLIER_Q_LOW)
     high_dep = df['interest_rate_on_deposit'].quantile(OUTLIER_Q_HIGH)
@@ -82,7 +94,6 @@ def main() -> None:
         (df['interest_rate_on_interest_bearing_deposit'] >= low_ib) & (df['interest_rate_on_interest_bearing_deposit'] <= high_ib)
     )
     df = df[mask_rates].copy()
-    print(len(df))
 
     # Keep z-scores strictly within [-Z_LIMIT, Z_LIMIT]
     mask_z = (
@@ -91,30 +102,33 @@ def main() -> None:
         df['branch_density_z'].between(-Z_LIMIT, Z_LIMIT)
     )
     df = df[mask_z].copy()
-    print(len(df))
 
     # Merge FFR and keep policy window
     ffr = pd.read_csv(FFR_CSV)
     df = df.merge(ffr, on=['Date'], how='left')
     mask = (df['Date'] >= DATE_START) & (df['Date'] <= DATE_END)
     df = df[mask]
-    print(len(df))
 
     # Large bank indicator (size threshold)
     df['large_bank'] = np.where(df['ASSET'] > ASSET_LARGE_THRESHOLD, 1, 0)
     df.drop(columns=['ASSET'], inplace=True)
 
-    print(len(df[df['large_bank'] == 1]))
-    print(len(df[df['large_bank'] == 0]))
+    # Winsorize ROA and asset_to_equity at 0.5% / 99.5%; cap core_deposit_share below 1
+    low_roa = df['ROA'].quantile(OUTLIER_Q_LOW)
+    high_roa = df['ROA'].quantile(OUTLIER_Q_HIGH)
+    df['ROA'] = df['ROA'].clip(lower=low_roa, upper=high_roa)
 
-    # Commercial bank flag based on BKCLASS
-    # See FFIEC Call Report documentation for BKCLASS codes.
-    df['is_commercial_bank'] = np.where(df['BKCLASS'].isin(COMMERCIAL_BKCLASS), 1, 0)
-    df.drop(columns=['BKCLASS'], inplace=True)
+    low_ae = df['asset_to_equity'].quantile(OUTLIER_Q_LOW)
+    high_ae = df['asset_to_equity'].quantile(OUTLIER_Q_HIGH)
+    df['asset_to_equity'] = df['asset_to_equity'].clip(lower=low_ae, upper=high_ae)
 
-    print(len(df[df['is_commercial_bank'] == 1]))
-    print(len(df[df['is_commercial_bank'] == 0]))
-    
+    df['core_deposit_share'] = np.minimum(df['core_deposit_share'], 0.999)
+
+    # Count after winsorizing
+    print('Bank-quarter after winsorizing: ', len(df))
+    print('Large bank: ', len(df[df['large_bank'] == 1]))
+    print('Small bank: ', len(df[df['large_bank'] == 0]))
+
     # Save
     df.to_csv(OUTPUT_CSV, index=False)
 
