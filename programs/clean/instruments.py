@@ -113,11 +113,21 @@ branch_count = (
     .size()
     .reset_index(name='branch_count')
 )
+
+# DEPDOM in SOD is bank-level total domestic deposits (same for all branches of a bank-year),
+# so we can safely take .first().
 bank_depdom = sod.groupby(['YEAR', 'RSSDID'], as_index=False)['DEPDOM'].first()
+
 branch_density_df = branch_count.merge(bank_depdom, on=['YEAR', 'RSSDID'], how='left')
-branch_density_df['branch_density'] = (
-    (branch_density_df['branch_count'] / branch_density_df['DEPDOM'] / 1_000_000_000)
-    .where(branch_density_df['DEPDOM'] > 0)
+
+# Convert DEPDOM to billions of dollars
+branch_density_df['DEPDOM_bil'] = branch_density_df['DEPDOM'] / 1_000_000_000
+
+# Branches per $1B of DEPDOM
+branch_density_df['branch_density'] = np.where(
+    branch_density_df['DEPDOM'] > 0,
+    branch_density_df['branch_count'] / branch_density_df['DEPDOM_bil'],
+    np.nan,
 )
 
 # Division deposit shares per bank-year: % of bank deposits in each census division (0–1).
